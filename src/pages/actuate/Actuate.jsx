@@ -2,21 +2,26 @@ import React, { useEffect, useState } from "react";
 import mqtt from "precompiled-mqtt";
 import { Button, Typography } from "@mui/material";
 
-const URL = "mqtt://n8a5e78d.eu-central-1.emqx.cloud:15207";
+//const URL = " wss://161.53.19.19:56183/";
+const URL = "wss://test.mosquitto.org:8081/";
 
 const Actuate = () => {
   const [client, setClient] = useState(null);
 
   useEffect(() => {
+    console.log("CONNECTing");
     const cli = mqtt.connect(URL);
-    setClient(client);
     cli.on("connect", () => {
       console.log("CONNECTED to broker");
+      setClient(cli);
     });
-  }, [client]);
+  }, []);
 
   function handleActuationClick() {
-    client.publish("test/1", "actuate");
+    console.log("client ", client);
+    client.publish("grupa23", {
+      led: "enabled",
+    });
   }
 
   return (
