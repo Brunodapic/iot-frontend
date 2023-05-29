@@ -10,7 +10,9 @@ const NavLink = (props) => {
 
     return (
         <div onClick={() => navigate(to)} className={styles.label}>
+            
             {label}
+
         </div>
     )
 }
