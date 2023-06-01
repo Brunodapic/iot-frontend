@@ -10,9 +10,8 @@ const App = () => {
       <Router>
         <Navigation />
         <Routes>
-          <Route path="/graph" element={<GraphPage />} />
           <Route path="/actuate" element={<Actuate />} />
-          <Route path="/" />
+          <Route path="/"  element={<GraphPage />}/>
         </Routes>
       </Router>
     </div>

@@ -3,9 +3,7 @@ import Trend from "react-trend";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 
 function Graph(props) {
-  const data = [{ name: "Page A", uv: 400, pv: 2400, amt: 2400 }];
-
-  console.log(props.data);
+  
   const listOfValues = props.data.map((obj) => obj.value);
 
   return (
