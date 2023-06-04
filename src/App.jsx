@@ -1,3 +1,4 @@
+import React from "react";
 import styles from "./App.module.css";
 import Navigation from "./components/Navigation";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -11,7 +12,7 @@ const App = () => {
         <Navigation />
         <Routes>
           <Route path="/actuate" element={<Actuate />} />
-          <Route path="/"  element={<GraphPage />}/>
+          <Route path="/" element={<GraphPage />} />
         </Routes>
       </Router>
     </div>

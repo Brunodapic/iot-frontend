@@ -10,13 +10,13 @@ function GraphPage() {
     { name: "Ph", url: "G23ph" },
     { name: "Humidity", url: "G23Hum" },
   ];
-
+  console.log("rerendero sam ", page, pages[page]);
   return (
     <div>
       <div className={styles.buttonsDiv}>
-        <button onClick={()=>setPage(0)}>Temperature</button>
-        <button onClick={()=>setPage(1)} >Ph</button>
-        <button onClick={()=>setPage(2)} >Humidity</button>
+        <button onClick={() => setPage(0)}>Temperature</button>
+        <button onClick={() => setPage(1)}>Ph</button>
+        <button onClick={() => setPage(2)}>Humidity</button>
       </div>
       <DataComponent data={pages[page]} />
     </div>
