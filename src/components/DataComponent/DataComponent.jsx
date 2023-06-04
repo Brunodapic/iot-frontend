@@ -10,6 +10,10 @@ import Graph from "../../components/Graph/Graph";
 import axios from "axios";
 import styles from "./DataComponents.module.css";
 import mqtt from "precompiled-mqtt";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const URL = "ws://161.53.19.19:56183";
 
@@ -18,6 +22,7 @@ function DataComponent(props) {
   const [time, setTime] = useState(new Date());
   const [data, setData] = useState([]);
   const [client, setClient] = useState(null);
+  const [open, setOpen] = useState(false);
   let cli;
 
   useEffect(() => {
@@ -81,6 +86,7 @@ function DataComponent(props) {
       if (props.data.url === "G23Temp") {
         if (value.value > 30) {
           //console.log("client ", client, cli);
+          setOpen(true);
           if (client !== null) {
             client.publish("grupa23", "enabled");
           } else cli.publish("grupa23", "enabled");
@@ -88,6 +94,7 @@ function DataComponent(props) {
       } else if (props.data.url === "G23ph") {
         if (value.value > 11) {
           //console.log("client ", client, cli);
+          setOpen(true);
           if (client !== null) {
             client.publish("grupa23", "enabled");
           } else cli.publish("grupa23", "enabled");
@@ -95,6 +102,7 @@ function DataComponent(props) {
       } else {
         if (value.value > 50000) {
           //console.log("client ", client, cli);
+          setOpen(true);
           if (client !== null) {
             client.publish("grupa23", "enabled");
           } else cli.publish("grupa23", "enabled");
@@ -111,6 +119,31 @@ function DataComponent(props) {
     console.log("tazim data!!!!!!!!!!!!!!!!!");
     getData();
   }, [time, props]);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const action = (
+    <React.Fragment>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleClose}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  );
 
   if (client !== null)
     return (
@@ -142,6 +175,13 @@ function DataComponent(props) {
                 </TableBody>
               </Table>
             </TableContainer>
+            <Snackbar
+              open={open}
+              autoHideDuration={2000}
+              onClose={handleClose}
+              message="Actuation sent!"
+              action={action}
+            />
           </>
         ) : (
           ""
