@@ -18,15 +18,16 @@ function DataComponent(props) {
   const [time, setTime] = useState(new Date());
   const [data, setData] = useState([]);
   const [client, setClient] = useState(null);
+  let cli;
 
   useEffect(() => {
     console.log("Connecting to broker from graph page");
-    const cli = mqtt.connect(URL);
+    cli = mqtt.connect(URL);
     cli.on("connect", () => {
       console.log("Connected to broker from graph page");
       setClient(cli);
-      getData();
     });
+    console.log("zovem get data");
   }, []);
 
   useEffect(() => {
@@ -42,32 +43,31 @@ function DataComponent(props) {
   }
 
   const getData = async () => {
-    if (client)
-      axios
-        .get(
-          "http://161.53.19.19:56200/m2m/data?resourceSpec=" + props.data.url,
-          {
-            headers: {
-              Accept: "application/vnd.ericsson.m2m.output+json;version=1.1",
-            },
-            auth: {
-              username: "IoTGrupa23",
-              password: "IoTProject123",
-            },
-          }
-        )
-        .then(function (response) {
-          console.log(response);
-          var newData = [];
-          response.data.contentNodes.forEach((element) => {
-            newData.push(createData2(element.time, element.value));
-          });
-          newData.sort((a, b) => (a.time > b.time ? 1 : -1));
-          //data.pop();
-          findNew(data, newData);
-
-          setData(newData);
+    axios
+      .get(
+        "http://161.53.19.19:56200/m2m/data?resourceSpec=" + props.data.url,
+        {
+          headers: {
+            Accept: "application/vnd.ericsson.m2m.output+json;version=1.1",
+          },
+          auth: {
+            username: "IoTGrupa23",
+            password: "IoTProject123",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        var newData = [];
+        response.data.contentNodes.forEach((element) => {
+          newData.push(createData2(element.time, element.value));
         });
+        newData.sort((a, b) => (a.time > b.time ? 1 : -1));
+        //data.pop();
+        findNew(data, newData);
+
+        setData(newData);
+      });
   };
 
   function findNew(array1, array2) {
@@ -80,15 +80,24 @@ function DataComponent(props) {
     for (const value of diffValues) {
       if (props.data.url === "G23Temp") {
         if (value.value > 30) {
-          client.publish("grupa23", "enabled");
+          //console.log("client ", client, cli);
+          if (client !== null) {
+            client.publish("grupa23", "enabled");
+          } else cli.publish("grupa23", "enabled");
         }
       } else if (props.data.url === "G23ph") {
         if (value.value > 11) {
-          client.publish("grupa23", "enabled");
+          //console.log("client ", client, cli);
+          if (client !== null) {
+            client.publish("grupa23", "enabled");
+          } else cli.publish("grupa23", "enabled");
         }
       } else {
         if (value.value > 50000) {
-          client.publish("grupa23", "enabled");
+          //console.log("client ", client, cli);
+          if (client !== null) {
+            client.publish("grupa23", "enabled");
+          } else cli.publish("grupa23", "enabled");
         }
       }
     }
@@ -99,13 +108,11 @@ function DataComponent(props) {
   }
 
   useEffect(() => {
-    if (client) {
-      console.log("tazim data!!!!!!!!!!!!!!!!!");
-      getData();
-    }
-  }, [time]);
+    console.log("tazim data!!!!!!!!!!!!!!!!!");
+    getData();
+  }, [time, props]);
 
-  if (client)
+  if (client !== null)
     return (
       <div style={{ width: "600px" }}>
         {data && data.length > 1 ? (
@@ -142,7 +149,7 @@ function DataComponent(props) {
       </div>
     );
 
-  return <div>Loading data...</div>;
+  return <div className="text-black">Loading data...</div>;
 }
 
 export default DataComponent;
